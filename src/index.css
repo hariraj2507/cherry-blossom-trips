@@ -1,96 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Cherry Blossom Design System
+   A soft, pastel aesthetic inspired by Japanese sakura season
+   Combined with Minecraft-style pixel typography
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core Sakura Palette */
+    --background: 350 100% 98%; /* Soft petal white */
+    --foreground: 350 30% 15%; /* Deep sakura brown */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 350 60% 97%;
+    --card-foreground: 350 30% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 350 30% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Sakura Pink - Primary */
+    --primary: 350 80% 70%; /* Cherry blossom pink */
+    --primary-foreground: 350 30% 15%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Leaf Green - Secondary */
+    --secondary: 160 40% 85%;
+    --secondary-foreground: 160 50% 20%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Soft rose - Muted */
+    --muted: 350 30% 94%;
+    --muted-foreground: 350 20% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Blossom accent */
+    --accent: 340 70% 85%;
+    --accent-foreground: 340 60% 25%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive - Deep Rose */
+    --destructive: 350 65% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 350 40% 88%;
+    --input: 350 40% 92%;
+    --ring: 350 80% 70%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Custom gradients */
+    --gradient-sakura: linear-gradient(135deg, hsl(350, 80%, 85%) 0%, hsl(340, 70%, 90%) 50%, hsl(350, 60%, 95%) 100%);
+    --gradient-petal: linear-gradient(180deg, hsl(350, 100%, 98%) 0%, hsl(350, 60%, 97%) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(350, 80%, 75%) 0%, hsl(20, 90%, 80%) 100%);
+    
+    /* Custom shadows */
+    --shadow-petal: 0 4px 20px -4px hsl(350 80% 70% / 0.25);
+    --shadow-float: 0 8px 32px -8px hsl(350 60% 50% / 0.2);
+    --shadow-soft: 0 2px 8px -2px hsl(350 40% 60% / 0.15);
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    /* Sidebar */
+    --sidebar-background: 350 60% 97%;
+    --sidebar-foreground: 350 30% 25%;
+    --sidebar-primary: 350 80% 70%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 350 40% 92%;
+    --sidebar-accent-foreground: 350 30% 25%;
+    --sidebar-border: 350 40% 88%;
+    --sidebar-ring: 350 80% 70%;
 
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Additional semantic tokens */
+    --success: 160 60% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 40 90% 55%;
+    --warning-foreground: 40 90% 15%;
+    --info: 200 80% 55%;
+    --info-foreground: 0 0% 100%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 350 20% 8%;
+    --foreground: 350 30% 95%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 350 15% 12%;
+    --card-foreground: 350 30% 95%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 350 15% 10%;
+    --popover-foreground: 350 30% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 350 70% 65%;
+    --primary-foreground: 350 20% 10%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 160 30% 20%;
+    --secondary-foreground: 160 40% 90%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 350 15% 18%;
+    --muted-foreground: 350 20% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 340 50% 25%;
+    --accent-foreground: 340 60% 90%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 350 60% 45%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --border: 350 15% 20%;
+    --input: 350 15% 18%;
+    --ring: 350 70% 65%;
+
+    --sidebar-background: 350 15% 10%;
+    --sidebar-foreground: 350 30% 90%;
+    --sidebar-primary: 350 70% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 350 20% 18%;
+    --sidebar-accent-foreground: 350 30% 90%;
+    --sidebar-border: 350 15% 20%;
+    --sidebar-ring: 350 70% 65%;
   }
 }
 
@@ -100,6 +122,168 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Press Start 2P', cursive;
+  }
+
+  /* Typography scaling for pixel font */
+  h1 {
+    @apply text-2xl md:text-3xl leading-relaxed;
+  }
+
+  h2 {
+    @apply text-xl md:text-2xl leading-relaxed;
+  }
+
+  h3 {
+    @apply text-lg md:text-xl leading-relaxed;
+  }
+
+  h4 {
+    @apply text-base md:text-lg leading-relaxed;
+  }
+
+  p, span, label, a {
+    @apply text-xs md:text-sm leading-loose;
+  }
+
+  /* Reduce font size in forms for readability */
+  input, textarea, select, button {
+    font-family: 'Press Start 2P', cursive;
+    @apply text-xs;
+  }
+}
+
+@layer utilities {
+  /* Sakura floating animation */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-10px) rotate(3deg);
+    }
+  }
+
+  @keyframes petal-fall {
+    0% {
+      transform: translateY(-100vh) rotate(0deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh) rotate(720deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-petal {
+    animation: petal-fall 10s linear infinite;
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+    background: linear-gradient(90deg, transparent, hsl(350 80% 90% / 0.5), transparent);
+    background-size: 200% 100%;
+  }
+
+  /* Glass morphism effects */
+  .glass {
+    background: hsl(var(--background) / 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  .glass-card {
+    background: hsl(var(--card) / 0.9);
+    backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-petal);
+  }
+
+  /* Gradient backgrounds */
+  .bg-sakura-gradient {
+    background: var(--gradient-sakura);
+  }
+
+  .bg-petal-gradient {
+    background: var(--gradient-petal);
+  }
+
+  .bg-sunset-gradient {
+    background: var(--gradient-sunset);
+  }
+
+  /* Text gradients */
+  .text-gradient-sakura {
+    background: linear-gradient(135deg, hsl(350, 80%, 60%) 0%, hsl(340, 70%, 50%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-sakura::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-sakura::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  .scrollbar-sakura::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 4px;
+  }
+
+  .scrollbar-sakura::-webkit-scrollbar-thumb:hover {
+    background: hsl(350, 70%, 60%);
+  }
+
+  /* Pixel-perfect borders for that retro feel */
+  .pixel-border {
+    box-shadow: 
+      -2px 0 0 0 hsl(var(--border)),
+      2px 0 0 0 hsl(var(--border)),
+      0 -2px 0 0 hsl(var(--border)),
+      0 2px 0 0 hsl(var(--border));
+  }
+
+  .pixel-border-strong {
+    box-shadow: 
+      -4px 0 0 0 hsl(var(--primary)),
+      4px 0 0 0 hsl(var(--primary)),
+      0 -4px 0 0 hsl(var(--primary)),
+      0 4px 0 0 hsl(var(--primary)),
+      -4px -4px 0 0 hsl(var(--primary)),
+      4px -4px 0 0 hsl(var(--primary)),
+      -4px 4px 0 0 hsl(var(--primary)),
+      4px 4px 0 0 hsl(var(--primary));
   }
 }
