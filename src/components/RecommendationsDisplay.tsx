@@ -9,6 +9,7 @@ interface Attraction {
   estimatedCost: number;
   duration: string;
   bestTime: string;
+  imageUrl?: string;
 }
 
 interface Restaurant {
@@ -25,6 +26,7 @@ interface Activity {
   estimatedCost: number;
   duration: string;
   difficulty: 'easy' | 'moderate' | 'challenging';
+  imageUrl?: string;
 }
 
 interface Accommodation {
@@ -39,6 +41,7 @@ interface LocalExperience {
   description: string;
   estimatedCost: number;
   culturalNote: string;
+  imageUrl?: string;
 }
 
 interface Recommendations {
@@ -100,7 +103,16 @@ export function RecommendationsDisplay({ recommendations, travelTips, currency }
 
         <TabsContent value="attractions" className="mt-4 space-y-3">
           {recommendations.attractions?.map((attraction, index) => (
-            <Card key={index} variant="glass" className="animate-slide-in-right" style={{ animationDelay: `${index * 100}ms` }}>
+            <Card key={index} variant="glass" className="animate-slide-in-right overflow-hidden" style={{ animationDelay: `${index * 100}ms` }}>
+              {attraction.imageUrl && (
+                <div className="h-32 overflow-hidden">
+                  <img 
+                    src={attraction.imageUrl} 
+                    alt={attraction.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
               <CardContent className="p-4">
                 <div className="flex justify-between items-start gap-2">
                   <h4 className="text-xs font-medium">{attraction.name}</h4>
@@ -143,7 +155,16 @@ export function RecommendationsDisplay({ recommendations, travelTips, currency }
 
         <TabsContent value="activities" className="mt-4 space-y-3">
           {recommendations.activities?.map((activity, index) => (
-            <Card key={index} variant="glass" className="animate-slide-in-right" style={{ animationDelay: `${index * 100}ms` }}>
+            <Card key={index} variant="glass" className="animate-slide-in-right overflow-hidden" style={{ animationDelay: `${index * 100}ms` }}>
+              {activity.imageUrl && (
+                <div className="h-32 overflow-hidden">
+                  <img 
+                    src={activity.imageUrl} 
+                    alt={activity.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
               <CardContent className="p-4">
                 <div className="flex justify-between items-start gap-2">
                   <h4 className="text-xs font-medium">{activity.name}</h4>
@@ -190,7 +211,16 @@ export function RecommendationsDisplay({ recommendations, travelTips, currency }
 
         <TabsContent value="experiences" className="mt-4 space-y-3">
           {recommendations.localExperiences?.map((experience, index) => (
-            <Card key={index} variant="glass" className="animate-slide-in-right" style={{ animationDelay: `${index * 100}ms` }}>
+            <Card key={index} variant="glass" className="animate-slide-in-right overflow-hidden" style={{ animationDelay: `${index * 100}ms` }}>
+              {experience.imageUrl && (
+                <div className="h-32 overflow-hidden">
+                  <img 
+                    src={experience.imageUrl} 
+                    alt={experience.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
               <CardContent className="p-4">
                 <div className="flex justify-between items-start gap-2">
                   <h4 className="text-xs font-medium">{experience.name}</h4>
