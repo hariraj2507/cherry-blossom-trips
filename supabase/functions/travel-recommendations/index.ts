@@ -6,6 +6,8 @@ const corsHeaders = {
 };
 
 interface TripRequest {
+  travelerName?: string;
+  fromLocation?: string;
   destination: string;
   startDate: string;
   endDate: string;
@@ -21,9 +23,11 @@ serve(async (req) => {
   }
 
   try {
-    const { destination, startDate, endDate, interests, budget, currency, travelers } = await req.json() as TripRequest;
+    const { travelerName, fromLocation, destination, startDate, endDate, interests, budget, currency, travelers } = await req.json() as TripRequest;
 
     console.log('Generating travel recommendations for:', destination);
+    console.log('From:', fromLocation || 'Not specified');
+    console.log('Traveler:', travelerName || 'Anonymous');
     console.log('Budget:', budget, currency);
     console.log('Interests:', interests);
 
@@ -42,6 +46,7 @@ You must respond with a valid JSON object only, no additional text. The JSON mus
     "feasibility": "feasible" | "too_low" | "too_high",
     "dailyBudgetPerPerson": number,
     "estimatedTotalCost": number,
+    "estimatedTransportFromOrigin": number (if origin provided, estimate transport cost),
     "message": "string explaining the budget situation",
     "adjustmentSuggestions": ["array of suggestions to adjust if budget is not feasible"]
   },
@@ -52,7 +57,8 @@ You must respond with a valid JSON object only, no additional text. The JSON mus
         "description": "string",
         "estimatedCost": number,
         "duration": "string",
-        "bestTime": "string"
+        "bestTime": "string",
+        "imageUrl": "string (a relevant Unsplash image URL for this attraction)"
       }
     ],
     "restaurants": [
@@ -70,7 +76,8 @@ You must respond with a valid JSON object only, no additional text. The JSON mus
         "description": "string",
         "estimatedCost": number,
         "duration": "string",
-        "difficulty": "easy" | "moderate" | "challenging"
+        "difficulty": "easy" | "moderate" | "challenging",
+        "imageUrl": "string (a relevant Unsplash image URL for this activity)"
       }
     ],
     "accommodations": [
@@ -86,7 +93,8 @@ You must respond with a valid JSON object only, no additional text. The JSON mus
         "name": "string",
         "description": "string",
         "estimatedCost": number,
-        "culturalNote": "string"
+        "culturalNote": "string",
+        "imageUrl": "string (a relevant Unsplash image URL for this experience)"
       }
     ]
   },
@@ -98,9 +106,17 @@ You must respond with a valid JSON object only, no additional text. The JSON mus
     "miscellaneous": number
   },
   "travelTips": ["array of helpful tips for this destination"]
-}`;
+}
 
+For imageUrl fields, use Unsplash source URLs in the format: https://source.unsplash.com/800x600/?keyword1,keyword2
+Replace keywords with relevant terms for the specific attraction/activity (e.g., "tokyo,temple" or "sushi,japan")`;
+
+    const originInfo = fromLocation ? `Traveling from: ${fromLocation}` : '';
+    const travelerInfo = travelerName ? `Traveler name: ${travelerName}` : '';
+    
     const userPrompt = `Plan a trip to ${destination} for ${travelers} traveler(s).
+${travelerInfo}
+${originInfo}
 Dates: ${startDate} to ${endDate} (${tripDays} days)
 Total Budget: ${budget} ${currency}
 Interests: ${interests.join(', ')}
@@ -110,12 +126,14 @@ Analyze if this budget is realistic for this destination and trip duration. Cons
 - Food and dining expenses
 - Activity and attraction costs
 - Local transportation
+${fromLocation ? `- Estimated transport cost from ${fromLocation} to ${destination} (flights/trains)` : ''}
 - Miscellaneous expenses
 
 If the budget is too low, explain why and suggest either a higher budget or ways to reduce costs.
 If the budget is too high for the destination, suggest premium experiences or additional activities.
 
-Provide 4-5 recommendations per category, tailored to the interests and budget.`;
+Provide 4-5 recommendations per category, tailored to the interests and budget.
+Include relevant Unsplash image URLs for attractions, activities, and local experiences.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -186,6 +204,8 @@ Provide 4-5 recommendations per category, tailored to the interests and budget.`
         success: true,
         data: recommendations,
         tripDetails: {
+          travelerName,
+          fromLocation,
           destination,
           startDate,
           endDate,

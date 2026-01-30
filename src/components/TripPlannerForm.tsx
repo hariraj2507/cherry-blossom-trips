@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CalendarDays, DollarSign, Users, Sparkles, Loader2 } from "lucide-react";
+import { CalendarDays, DollarSign, Users, Sparkles, Loader2, MapPin, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,8 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
+    travelerName: '',
+    fromLocation: '',
     destination: '',
     startDate: '',
     endDate: '',
@@ -72,6 +74,8 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
     try {
       const { data, error } = await supabase.functions.invoke('travel-recommendations', {
         body: {
+          travelerName: formData.travelerName,
+          fromLocation: formData.fromLocation,
           destination: formData.destination,
           startDate: formData.startDate,
           endDate: formData.endDate,
@@ -119,14 +123,43 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
       
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Traveler Name */}
           <div className="space-y-2">
-            <label className="text-xs text-muted-foreground">Where to?</label>
+            <label className="text-xs text-muted-foreground flex items-center gap-1">
+              <User className="w-3 h-3" /> Your Name
+            </label>
             <Input
               variant="sakura"
-              placeholder="Tokyo, Paris, Bali..."
-              value={formData.destination}
-              onChange={(e) => setFormData(prev => ({ ...prev, destination: e.target.value }))}
+              placeholder="Enter your name"
+              value={formData.travelerName}
+              onChange={(e) => setFormData(prev => ({ ...prev, travelerName: e.target.value }))}
             />
+          </div>
+
+          {/* From and To locations */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <label className="text-xs text-muted-foreground flex items-center gap-1">
+                <MapPin className="w-3 h-3" /> From
+              </label>
+              <Input
+                variant="sakura"
+                placeholder="New York, London..."
+                value={formData.fromLocation}
+                onChange={(e) => setFormData(prev => ({ ...prev, fromLocation: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs text-muted-foreground flex items-center gap-1">
+                <MapPin className="w-3 h-3" /> To
+              </label>
+              <Input
+                variant="sakura"
+                placeholder="Tokyo, Paris, Bali..."
+                value={formData.destination}
+                onChange={(e) => setFormData(prev => ({ ...prev, destination: e.target.value }))}
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">

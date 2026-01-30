@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { WorkspaceCard } from "@/components/WorkspaceCard";
 import { WorkspaceFilters, type WorkspaceFilters as Filters } from "@/components/WorkspaceFilters";
+import { WorkspaceSuggestionForm } from "@/components/WorkspaceSuggestionForm";
 import { Loader2, MapPin } from "lucide-react";
 
 export function WorkspaceDirectory() {
@@ -100,7 +101,10 @@ export function WorkspaceDirectory() {
         </p>
       </div>
       
-      <WorkspaceFilters filters={filters} onFilterChange={setFilters} />
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <WorkspaceFilters filters={filters} onFilterChange={setFilters} />
+        <WorkspaceSuggestionForm />
+      </div>
       
       <div className="text-xs text-muted-foreground">
         Found {filteredWorkspaces.length} workspaces
