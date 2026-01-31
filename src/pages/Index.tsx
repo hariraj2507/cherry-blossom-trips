@@ -94,6 +94,8 @@ const Index = () => {
                       recommendations={tripData.data.recommendations}
                       travelTips={tripData.data.travelTips}
                       currency={tripData.tripDetails.currency}
+                      flightDetails={tripData.data.flightDetails}
+                      fromLocation={tripData.tripDetails.fromLocation}
                     />
                   </div>
                 </div>
