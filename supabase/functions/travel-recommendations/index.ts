@@ -50,6 +50,32 @@ You must respond with a valid JSON object only, no additional text. The JSON mus
     "message": "string explaining the budget situation",
     "adjustmentSuggestions": ["array of suggestions to adjust if budget is not feasible"]
   },
+  "flightDetails": {
+    "available": boolean,
+    "flights": [
+      {
+        "airline": "string (suggested airline name)",
+        "route": "string (e.g., 'Delhi → Tokyo')",
+        "estimatedPrice": number,
+        "flightDuration": "string (e.g., '8h 30m')",
+        "flightType": "direct" | "1-stop" | "2-stop",
+        "classRecommendation": "economy" | "premium-economy" | "business",
+        "bookingTip": "string (when to book for best prices)",
+        "budgetFriendly": boolean
+      }
+    ],
+    "alternativeTransport": [
+      {
+        "mode": "string (train/bus/ferry)",
+        "route": "string",
+        "estimatedPrice": number,
+        "duration": "string",
+        "notes": "string"
+      }
+    ],
+    "bestTimeToBook": "string",
+    "priceNote": "string explaining price estimates"
+  },
   "recommendations": {
     "attractions": [
       {
@@ -58,7 +84,7 @@ You must respond with a valid JSON object only, no additional text. The JSON mus
         "estimatedCost": number,
         "duration": "string",
         "bestTime": "string",
-        "imageUrl": "string (a relevant Unsplash image URL for this attraction)"
+        "imageUrl": "string (use format: https://images.unsplash.com/photo-[PHOTO_ID]?w=800&h=600&fit=crop)"
       }
     ],
     "restaurants": [
@@ -77,7 +103,7 @@ You must respond with a valid JSON object only, no additional text. The JSON mus
         "estimatedCost": number,
         "duration": "string",
         "difficulty": "easy" | "moderate" | "challenging",
-        "imageUrl": "string (a relevant Unsplash image URL for this activity)"
+        "imageUrl": "string (use format: https://images.unsplash.com/photo-[PHOTO_ID]?w=800&h=600&fit=crop)"
       }
     ],
     "accommodations": [
@@ -94,7 +120,18 @@ You must respond with a valid JSON object only, no additional text. The JSON mus
         "description": "string",
         "estimatedCost": number,
         "culturalNote": "string",
-        "imageUrl": "string (a relevant Unsplash image URL for this experience)"
+        "imageUrl": "string (use format: https://images.unsplash.com/photo-[PHOTO_ID]?w=800&h=600&fit=crop)"
+      }
+    ],
+    "nearbyPlaces": [
+      {
+        "name": "string",
+        "distanceFromDestination": "string (e.g., '45 km' or '1 hour drive')",
+        "description": "string (why visit this place)",
+        "estimatedDayTripCost": number,
+        "recommendedDuration": "string",
+        "transportFromDestination": "string (how to get there)",
+        "imageUrl": "string (use format: https://images.unsplash.com/photo-[PHOTO_ID]?w=800&h=600&fit=crop)"
       }
     ]
   },
@@ -103,13 +140,34 @@ You must respond with a valid JSON object only, no additional text. The JSON mus
     "food": number,
     "activities": number,
     "transport": number,
+    "flights": number,
     "miscellaneous": number
   },
   "travelTips": ["array of helpful tips for this destination"]
 }
 
-For imageUrl fields, use Unsplash source URLs in the format: https://source.unsplash.com/800x600/?keyword1,keyword2
-Replace keywords with relevant terms for the specific attraction/activity (e.g., "tokyo,temple" or "sushi,japan")`;
+IMPORTANT FOR IMAGES:
+- For imageUrl fields, you MUST use real Unsplash photo URLs. Use this format: https://images.unsplash.com/photo-[PHOTO_ID]?w=800&h=600&fit=crop
+- Use real Unsplash photo IDs for famous landmarks and places. Examples:
+  - Tokyo Tower: https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop
+  - Eiffel Tower: https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&h=600&fit=crop
+  - Taj Mahal: https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&h=600&fit=crop
+  - Swiss Alps: https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&h=600&fit=crop
+- For each attraction/activity/experience, find an appropriate Unsplash photo that matches the location.
+
+IMPORTANT FOR FLIGHT DETAILS:
+- When origin (fromLocation) is provided, include realistic flight options based on:
+  - Common airlines serving that route
+  - Typical flight durations
+  - Estimated price ranges based on the user's budget
+  - Class recommendations (economy for budget travelers, business for luxury budgets)
+- Include alternative transport (trains, buses) when applicable
+- Provide booking tips (e.g., "Book 2-3 months ahead for best prices")
+
+IMPORTANT FOR NEARBY PLACES:
+- Always include 3-5 nearby day-trip destinations from the main destination
+- Include how to get there from the main destination
+- Focus on places that match the user's interests`;
 
     const originInfo = fromLocation ? `Traveling from: ${fromLocation}` : '';
     const travelerInfo = travelerName ? `Traveler name: ${travelerName}` : '';
@@ -126,14 +184,22 @@ Analyze if this budget is realistic for this destination and trip duration. Cons
 - Food and dining expenses
 - Activity and attraction costs
 - Local transportation
-${fromLocation ? `- Estimated transport cost from ${fromLocation} to ${destination} (flights/trains)` : ''}
+${fromLocation ? `- IMPORTANT: Provide detailed flight options from ${fromLocation} to ${destination}:
+  - Include 2-3 flight options with different airlines
+  - Show estimated prices that fit within the ${budget} ${currency} budget
+  - Recommend economy class if budget is tight, premium/business if budget allows
+  - Include alternative transport options if available (trains, buses)
+  - Add booking tips for best prices` : ''}
 - Miscellaneous expenses
 
 If the budget is too low, explain why and suggest either a higher budget or ways to reduce costs.
 If the budget is too high for the destination, suggest premium experiences or additional activities.
 
-Provide 4-5 recommendations per category, tailored to the interests and budget.
-Include relevant Unsplash image URLs for attractions, activities, and local experiences.`;
+IMPORTANT: 
+1. Provide 4-5 recommendations per category, tailored to the interests and budget.
+2. Include REAL Unsplash image URLs for ALL attractions, activities, and local experiences. Use actual Unsplash photo IDs.
+3. Include 3-5 nearby places/day trips from ${destination} that the traveler can visit.
+4. ${fromLocation ? `Provide detailed flight information from ${fromLocation} to ${destination} with realistic airline names, durations, and prices.` : 'Skip the flightDetails section if no origin is provided.'}`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
