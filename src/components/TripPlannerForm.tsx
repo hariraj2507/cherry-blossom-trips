@@ -100,15 +100,17 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
       if (data.success) {
         onRecommendations(data);
         
-        // Show founder popup if destination is Cuddalore (after recommendations generated)
-        if (formData.destination.toLowerCase().includes('cuddalore')) {
-          setShowFounderPopup(true);
-        }
-        
         toast({
           title: "Trip Planned! ✨",
           description: "Your personalized recommendations are ready",
         });
+        
+        // Show founder popup if destination is Cuddalore (after recommendations generated with slight delay)
+        if (formData.destination.toLowerCase().includes('cuddalore')) {
+          setTimeout(() => {
+            setShowFounderPopup(true);
+          }, 500);
+        }
       } else {
         throw new Error(data.error || 'Failed to generate recommendations');
       }
