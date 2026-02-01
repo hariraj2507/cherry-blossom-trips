@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { CalendarDays, DollarSign, Users, Sparkles, Loader2, MapPin, User, Heart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -56,13 +56,6 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
     }));
   };
 
-  // Check for Cuddalore destination - Easter egg for founder
-  useEffect(() => {
-    const destination = formData.destination.toLowerCase().trim();
-    if (destination.includes('cuddalore')) {
-      setShowFounderPopup(true);
-    }
-  }, [formData.destination]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,6 +99,12 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
 
       if (data.success) {
         onRecommendations(data);
+        
+        // Show founder popup if destination is Cuddalore (after recommendations generated)
+        if (formData.destination.toLowerCase().includes('cuddalore')) {
+          setShowFounderPopup(true);
+        }
+        
         toast({
           title: "Trip Planned! ✨",
           description: "Your personalized recommendations are ready",
