@@ -1,11 +1,18 @@
-import { useState } from "react";
-import { CalendarDays, DollarSign, Users, Sparkles, Loader2, MapPin, User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { CalendarDays, DollarSign, Users, Sparkles, Loader2, MapPin, User, Heart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface TripPlannerFormProps {
   onRecommendations: (data: any) => void;
@@ -27,6 +34,7 @@ const interestOptions = [
 export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [showFounderPopup, setShowFounderPopup] = useState(false);
   const [formData, setFormData] = useState({
     travelerName: '',
     fromLocation: '',
@@ -47,6 +55,14 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
         : [...prev.interests, interestId],
     }));
   };
+
+  // Check for Cuddalore destination - Easter egg for founder
+  useEffect(() => {
+    const destination = formData.destination.toLowerCase().trim();
+    if (destination.includes('cuddalore')) {
+      setShowFounderPopup(true);
+    }
+  }, [formData.destination]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,8 +126,43 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
   };
 
   return (
-    <Card variant="sakura" className="w-full max-w-2xl mx-auto animate-fade-in">
-      <CardHeader className="text-center">
+    <>
+      {/* Founder Easter Egg Dialog */}
+      <Dialog open={showFounderPopup} onOpenChange={setShowFounderPopup}>
+        <DialogContent className="sm:max-w-md border-primary/30 bg-gradient-to-br from-card via-card to-primary/5">
+          <DialogHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="relative">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center animate-bounce-soft">
+                  <Heart className="w-10 h-10 text-primary-foreground fill-primary-foreground" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-sakura-accent rounded-full flex items-center justify-center">
+                  <span className="text-xs">🌸</span>
+                </div>
+              </div>
+            </div>
+            <DialogTitle className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              Welcome to Cuddalore! 🎉
+            </DialogTitle>
+            <DialogDescription className="text-base leading-relaxed mt-4 space-y-3">
+              <p className="text-foreground font-medium">
+                This is the hometown of our founder, <span className="text-primary font-bold">A. Hari Raj</span>!
+              </p>
+              <p className="text-muted-foreground">
+                If you happen to visit this beautiful district, feel free to reach out and meet him. He'd love to welcome you personally! 🤝
+              </p>
+              <div className="pt-2 flex items-center justify-center gap-2 text-sm text-primary/80">
+                <Sparkles className="w-4 h-4" />
+                <span>Enjoy your trip to Cuddalore!</span>
+                <Sparkles className="w-4 h-4" />
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
+      <Card variant="sakura" className="w-full max-w-2xl mx-auto animate-fade-in">
+        <CardHeader className="text-center">
         <CardTitle className="flex items-center justify-center gap-2 text-lg">
           <Sparkles className="w-5 h-5 text-primary animate-bounce-soft" />
           Plan Your Adventure
@@ -271,5 +322,6 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
         </form>
       </CardContent>
     </Card>
+    </>
   );
 }
