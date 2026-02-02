@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { CalendarDays, DollarSign, Users, Sparkles, Loader2, MapPin, User, Heart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -105,11 +105,22 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
           description: "Your personalized recommendations are ready",
         });
         
-        // Show founder popup if destination is Cuddalore (after recommendations generated with slight delay)
-        if (formData.destination.toLowerCase().includes('cuddalore')) {
-          setTimeout(() => {
-            setShowFounderPopup(true);
-          }, 500);
+        // Store destination for popup check
+        const destinationLower = formData.destination.toLowerCase();
+        const isCuddalore = destinationLower.includes('cuddalore');
+        
+        console.log('Destination check:', { destination: formData.destination, isCuddalore });
+        
+        // Show founder popup if destination is Cuddalore (after recommendations generated)
+        if (isCuddalore) {
+          console.log('Triggering Cuddalore popup...');
+          // Use requestAnimationFrame to ensure DOM is updated, then setTimeout for visibility
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              console.log('Setting showFounderPopup to true');
+              setShowFounderPopup(true);
+            }, 800);
+          });
         }
       } else {
         throw new Error(data.error || 'Failed to generate recommendations');
