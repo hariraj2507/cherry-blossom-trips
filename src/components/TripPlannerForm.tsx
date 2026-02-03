@@ -47,6 +47,14 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
     interests: [] as string[],
   });
 
+  // Check for Cuddalore destination and show popup
+  useEffect(() => {
+    const destinationLower = formData.destination.toLowerCase();
+    if (destinationLower.includes('cuddalore') && !showFounderPopup) {
+      setShowFounderPopup(true);
+    }
+  }, [formData.destination]);
+
   const toggleInterest = (interestId: string) => {
     setFormData(prev => ({
       ...prev,
@@ -55,7 +63,6 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
         : [...prev.interests, interestId],
     }));
   };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,24 +111,6 @@ export function TripPlannerForm({ onRecommendations }: TripPlannerFormProps) {
           title: "Trip Planned! ✨",
           description: "Your personalized recommendations are ready",
         });
-        
-        // Store destination for popup check
-        const destinationLower = formData.destination.toLowerCase();
-        const isCuddalore = destinationLower.includes('cuddalore');
-        
-        console.log('Destination check:', { destination: formData.destination, isCuddalore });
-        
-        // Show founder popup if destination is Cuddalore (after recommendations generated)
-        if (isCuddalore) {
-          console.log('Triggering Cuddalore popup...');
-          // Use requestAnimationFrame to ensure DOM is updated, then setTimeout for visibility
-          requestAnimationFrame(() => {
-            setTimeout(() => {
-              console.log('Setting showFounderPopup to true');
-              setShowFounderPopup(true);
-            }, 800);
-          });
-        }
       } else {
         throw new Error(data.error || 'Failed to generate recommendations');
       }
