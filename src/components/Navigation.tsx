@@ -1,9 +1,9 @@
-import { Plane, MapPin, Briefcase } from "lucide-react";
+import { Plane, MapPin, Briefcase, Compass } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface NavigationProps {
-  activeTab: 'planner' | 'workspaces';
-  onTabChange: (tab: 'planner' | 'workspaces') => void;
+  activeTab: 'planner' | 'workspaces' | 'tools';
+  onTabChange: (tab: 'planner' | 'workspaces' | 'tools') => void;
 }
 
 export function Navigation({ activeTab, onTabChange }: NavigationProps) {
@@ -38,6 +38,15 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
             >
               <Briefcase className="w-3 h-3" />
               <span className="hidden sm:inline">Workspaces</span>
+            </Button>
+            <Button
+              variant={activeTab === 'tools' ? 'sakura' : 'ghost'}
+              size="sm"
+              onClick={() => onTabChange('tools')}
+              className="text-[10px]"
+            >
+              <Compass className="w-3 h-3" />
+              <span className="hidden sm:inline">Tools</span>
             </Button>
           </div>
         </div>

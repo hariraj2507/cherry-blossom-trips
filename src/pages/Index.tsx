@@ -6,12 +6,13 @@ import { BudgetAnalysisCard } from "@/components/BudgetAnalysisCard";
 import { BudgetTracker } from "@/components/BudgetTracker";
 import { RecommendationsDisplay } from "@/components/RecommendationsDisplay";
 import { WorkspaceDirectory } from "@/components/WorkspaceDirectory";
+import { ToolsDirectory } from "@/components/tools/ToolsDirectory";
 import { CherryBlossomTree } from "@/components/CherryBlossomTree";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState<'planner' | 'workspaces'>('planner');
+  const [activeTab, setActiveTab] = useState<'planner' | 'workspaces' | 'tools'>('planner');
   const [tripData, setTripData] = useState<any>(null);
   const plannerRef = useRef<HTMLDivElement>(null);
 
@@ -103,9 +104,15 @@ const Index = () => {
             </div>
           </>
         ) : (
+        activeTab === 'workspaces' ? (
           <div className="py-8">
             <WorkspaceDirectory />
           </div>
+        ) : (
+          <div className="py-8">
+            <ToolsDirectory />
+          </div>
+        )
         )}
       </main>
 
