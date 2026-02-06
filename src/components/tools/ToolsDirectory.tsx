@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Camera, BookOpen, ArrowRight } from "lucide-react";
+import { Camera, BookOpen, ArrowRight, ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MenuTranslator } from "./MenuTranslator";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type ActiveTool = 'directory' | 'menu-translator' | 'slang-guide';
 
 export function ToolsDirectory() {
+  const { t } = useLanguage();
   const [activeTool, setActiveTool] = useState<ActiveTool>('directory');
 
   if (activeTool === 'menu-translator') {
@@ -19,12 +21,13 @@ export function ToolsDirectory() {
     return (
       <div className="max-w-4xl mx-auto space-y-6">
         <Button variant="ghost" onClick={() => setActiveTool('directory')} className="text-xs">
-          ← Back to Tools
+          <ArrowLeft className="w-3 h-3 mr-1" />
+          {t('menu.backToTools')}
         </Button>
         <Card variant="sakura">
           <CardHeader className="text-center">
-            <CardTitle className="text-gradient-sakura">Slang & Etiquette Guide</CardTitle>
-            <CardDescription>Coming soon! Learn local phrases and customs.</CardDescription>
+            <CardTitle className="text-gradient-sakura">{t('tools.slangGuide')}</CardTitle>
+            <CardDescription>{t('tools.comingSoon')}! {t('tools.slangGuideDesc')}</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -34,9 +37,9 @@ export function ToolsDirectory() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="text-center space-y-2">
-        <h2 className="text-gradient-sakura">Cultural Tools</h2>
+        <h2 className="text-gradient-sakura">{t('tools.title')}</h2>
         <p className="text-xs text-muted-foreground">
-          Navigate local culture with AI-powered assistance
+          {t('tools.subtitle')}
         </p>
       </div>
 
@@ -54,9 +57,9 @@ export function ToolsDirectory() {
               </div>
               <Badge variant="secondary" className="text-[10px]">AI Powered</Badge>
             </div>
-            <CardTitle className="text-sm">Menu Translator</CardTitle>
+            <CardTitle className="text-sm">{t('tools.menuTranslator')}</CardTitle>
             <CardDescription className="text-xs">
-              Snap a photo of any menu and get instant translations with dish explanations and dietary info
+              {t('tools.menuTranslatorDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -68,7 +71,7 @@ export function ToolsDirectory() {
               <Badge variant="outline" className="text-[9px]">+50 more</Badge>
             </div>
             <Button size="sm" className="w-full text-xs">
-              Open Translator <ArrowRight className="w-3 h-3 ml-1" />
+              {t('tools.openTool')} <ArrowRight className="w-3 h-3 ml-1" />
             </Button>
           </CardContent>
         </Card>
@@ -84,11 +87,11 @@ export function ToolsDirectory() {
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/50 to-primary flex items-center justify-center">
                 <BookOpen className="w-5 h-5 text-white" />
               </div>
-              <Badge variant="outline" className="text-[10px]">Coming Soon</Badge>
+              <Badge variant="outline" className="text-[10px]">{t('tools.comingSoon')}</Badge>
             </div>
-            <CardTitle className="text-sm">Slang & Etiquette Guide</CardTitle>
+            <CardTitle className="text-sm">{t('tools.slangGuide')}</CardTitle>
             <CardDescription className="text-xs">
-              Learn essential phrases and local customs for Tamil Nadu and beyond
+              {t('tools.slangGuideDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -99,7 +102,7 @@ export function ToolsDirectory() {
               <Badge variant="outline" className="text-[9px]">Shopping</Badge>
             </div>
             <Button size="sm" variant="outline" className="w-full text-xs">
-              Coming Soon <ArrowRight className="w-3 h-3 ml-1" />
+              {t('tools.comingSoon')} <ArrowRight className="w-3 h-3 ml-1" />
             </Button>
           </CardContent>
         </Card>

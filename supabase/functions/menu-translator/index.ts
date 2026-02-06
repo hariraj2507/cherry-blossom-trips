@@ -28,7 +28,7 @@ serve(async (req) => {
           const labels: Record<string, string> = {
             vegetarian: 'Vegetarian (no meat or fish)',
             vegan: 'Vegan (no animal products)',
-            jain: 'Jain (no root vegetables, no onion, no garlic)',
+            nonVegetarian: 'Non-vegetarian (prefers meat/fish dishes)',
             glutenFree: 'Gluten-free',
             noOnionGarlic: 'No onion or garlic',
             nutAllergy: 'Nut allergy (avoid all nuts)',
@@ -60,7 +60,7 @@ Respond in JSON format with this exact structure:
       "translatedName": "English translation",
       "description": "what the dish is, how it's prepared, what it tastes like",
       "ingredients": ["main ingredient 1", "main ingredient 2"],
-      "dietaryTags": ["vegetarian", "vegan", "contains-nuts", "gluten-free", "dairy-free", "non-vegetarian", "jain-friendly"],
+      "dietaryTags": ["vegetarian", "vegan", "contains-nuts", "gluten-free", "dairy-free", "non-vegetarian"],
       "spiceLevel": "mild|medium|spicy|very_spicy",
       "price": "price if visible on menu",
       "isCompatible": true/false based on user dietary requirements,

@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface MenuTranslatorProps {
   onBack: () => void;
@@ -16,7 +17,7 @@ interface MenuTranslatorProps {
 interface DietaryPreferences {
   vegetarian: boolean;
   vegan: boolean;
-  jain: boolean;
+  nonVegetarian: boolean;
   glutenFree: boolean;
   noOnionGarlic: boolean;
   nutAllergy: boolean;
@@ -43,6 +44,7 @@ interface TranslationResult {
 }
 
 export function MenuTranslator({ onBack }: MenuTranslatorProps) {
+  const { t } = useLanguage();
   const [image, setImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -51,7 +53,7 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
   const [preferences, setPreferences] = useState<DietaryPreferences>({
     vegetarian: false,
     vegan: false,
-    jain: false,
+    nonVegetarian: false,
     glutenFree: false,
     noOnionGarlic: false,
     nutAllergy: false,
@@ -67,8 +69,8 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
         toast({
-          title: "File too large",
-          description: "Please select an image under 10MB",
+          title: t('menu.fileTooLarge'),
+          description: t('menu.fileTooLargeDesc'),
           variant: "destructive",
         });
         return;
@@ -82,6 +84,12 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
       };
       reader.readAsDataURL(file);
     }
+    // Reset input value to allow selecting the same file again
+    e.target.value = '';
+  };
+
+  const handleCameraCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleFileSelect(e);
   };
 
   const togglePreference = (key: keyof DietaryPreferences) => {
@@ -108,14 +116,14 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
       
       setResult(data);
       toast({
-        title: "Menu Translated! 🍽️",
-        description: `Found ${data.dishes?.length || 0} dishes in ${data.menuLanguage || 'the menu'}`,
+        title: t('menu.menuTranslated'),
+        description: t('menu.foundDishes', { count: data.dishes?.length || 0, language: data.menuLanguage || 'the menu' }),
       });
     } catch (error) {
       console.error('Translation error:', error);
       toast({
-        title: "Translation Failed",
-        description: error instanceof Error ? error.message : "Please try again with a clearer image",
+        title: t('menu.translationFailed'),
+        description: error instanceof Error ? error.message : t('menu.tryAgain'),
         variant: "destructive",
       });
     } finally {
@@ -143,7 +151,6 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
     const colors: Record<string, string> = {
       vegetarian: 'bg-green-500/20 text-green-700 border-green-500/30',
       vegan: 'bg-emerald-500/20 text-emerald-700 border-emerald-500/30',
-      jain: 'bg-amber-500/20 text-amber-700 border-amber-500/30',
       'gluten-free': 'bg-blue-500/20 text-blue-700 border-blue-500/30',
       'contains-nuts': 'bg-red-500/20 text-red-700 border-red-500/30',
       'dairy-free': 'bg-purple-500/20 text-purple-700 border-purple-500/30',
@@ -152,39 +159,41 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
     return colors[tag.toLowerCase()] || 'bg-muted text-muted-foreground';
   };
 
+  const dietaryOptions = [
+    { key: 'vegetarian', label: t('menu.vegetarian'), emoji: '🥬' },
+    { key: 'vegan', label: t('menu.vegan'), emoji: '🌱' },
+    { key: 'nonVegetarian', label: t('menu.nonVeg'), emoji: '🍖' },
+    { key: 'glutenFree', label: t('menu.glutenFree'), emoji: '🌾' },
+    { key: 'noOnionGarlic', label: t('menu.noOnionGarlic'), emoji: '🧄' },
+    { key: 'nutAllergy', label: t('menu.nutAllergy'), emoji: '🥜' },
+    { key: 'dairyFree', label: t('menu.dairyFree'), emoji: '🥛' },
+  ];
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <Button variant="ghost" onClick={onBack} className="text-xs">
         <ArrowLeft className="w-3 h-3 mr-1" />
-        Back to Tools
+        {t('menu.backToTools')}
       </Button>
 
       <div className="text-center space-y-2">
-        <h2 className="text-gradient-sakura">Menu Translator</h2>
+        <h2 className="text-gradient-sakura">{t('menu.title')}</h2>
         <p className="text-xs text-muted-foreground">
-          Upload a menu photo and get instant translations with dietary information
+          {t('menu.subtitle')}
         </p>
       </div>
 
       {/* Dietary Preferences */}
       <Card variant="glass">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm">Dietary Preferences</CardTitle>
+          <CardTitle className="text-sm">{t('menu.dietaryPrefs')}</CardTitle>
           <CardDescription className="text-xs">
-            Select your dietary requirements to highlight compatible dishes
+            {t('menu.dietaryPrefsDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {[
-              { key: 'vegetarian', label: 'Vegetarian', emoji: '🥬' },
-              { key: 'vegan', label: 'Vegan', emoji: '🌱' },
-              { key: 'jain', label: 'Jain', emoji: '🕉️' },
-              { key: 'glutenFree', label: 'Gluten-Free', emoji: '🌾' },
-              { key: 'noOnionGarlic', label: 'No Onion/Garlic', emoji: '🧄' },
-              { key: 'nutAllergy', label: 'Nut Allergy', emoji: '🥜' },
-              { key: 'dairyFree', label: 'Dairy-Free', emoji: '🥛' },
-            ].map(({ key, label, emoji }) => (
+            {dietaryOptions.map(({ key, label, emoji }) => (
               <div key={key} className="flex items-center space-x-2">
                 <Switch
                   id={key}
@@ -209,26 +218,28 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
                 <Camera className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h3 className="text-sm font-medium mb-1">Upload Menu Photo</h3>
+                <h3 className="text-sm font-medium mb-1">{t('menu.uploadPhoto')}</h3>
                 <p className="text-xs text-muted-foreground mb-4">
-                  Take a photo or upload an image of any menu
+                  {t('menu.uploadDesc')}
                 </p>
               </div>
               <div className="flex justify-center gap-3">
                 <Button
+                  type="button"
                   onClick={() => cameraInputRef.current?.click()}
                   className="text-xs"
                 >
                   <Camera className="w-4 h-4 mr-1" />
-                  Take Photo
+                  {t('menu.takePhoto')}
                 </Button>
                 <Button
+                  type="button"
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
                   className="text-xs"
                 >
                   <Upload className="w-4 h-4 mr-1" />
-                  Upload Image
+                  {t('menu.uploadImage')}
                 </Button>
               </div>
               <input
@@ -236,7 +247,7 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
                 type="file"
                 accept="image/*"
                 capture="environment"
-                onChange={handleFileSelect}
+                onChange={handleCameraCapture}
                 className="hidden"
               />
               <input
@@ -263,6 +274,7 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
                 {!result && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg">
                     <Button
+                      type="button"
                       onClick={translateMenu}
                       disabled={isProcessing}
                       size="lg"
@@ -271,12 +283,12 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
                       {isProcessing ? (
                         <>
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Translating...
+                          {t('menu.translating')}
                         </>
                       ) : (
                         <>
                           <Camera className="w-4 h-4 mr-2" />
-                          Translate Menu
+                          {t('menu.translateMenu')}
                         </>
                       )}
                     </Button>
@@ -284,14 +296,14 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
                 )}
               </div>
               <div className="flex justify-between mt-3">
-                <Button variant="outline" size="sm" onClick={resetTranslator} className="text-xs">
+                <Button type="button" variant="outline" size="sm" onClick={resetTranslator} className="text-xs">
                   <Upload className="w-3 h-3 mr-1" />
-                  New Photo
+                  {t('menu.newPhoto')}
                 </Button>
                 {result && (
-                  <Button variant="outline" size="sm" onClick={translateMenu} disabled={isProcessing} className="text-xs">
+                  <Button type="button" variant="outline" size="sm" onClick={translateMenu} disabled={isProcessing} className="text-xs">
                     <Loader2 className={`w-3 h-3 mr-1 ${isProcessing ? 'animate-spin' : ''}`} />
-                    Re-translate
+                    {t('menu.reTranslate')}
                   </Button>
                 )}
               </div>
@@ -305,10 +317,10 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-medium">
-                    {result.dishes?.length || 0} Dishes Found
+                    {result.dishes?.length || 0} {t('menu.dishesFound')}
                   </h3>
                   <p className="text-xs text-muted-foreground">
-                    {result.menuLanguage && `Original: ${result.menuLanguage}`}
+                    {result.menuLanguage && `${t('menu.original')}: ${result.menuLanguage}`}
                     {result.restaurantType && ` • ${result.restaurantType}`}
                   </p>
                 </div>
@@ -316,11 +328,11 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
                   <TabsList className="h-8">
                     <TabsTrigger value="list" className="text-xs px-2">
                       <List className="w-3 h-3 mr-1" />
-                      List
+                      {t('menu.list')}
                     </TabsTrigger>
                     <TabsTrigger value="overlay" className="text-xs px-2">
                       <ImageIcon className="w-3 h-3 mr-1" />
-                      Overlay
+                      {t('menu.overlay')}
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
@@ -356,14 +368,14 @@ export function MenuTranslator({ onBack }: MenuTranslatorProps) {
                               )}
                             </div>
                             <p className="text-[10px] text-muted-foreground mb-2">
-                              Original: {dish.originalName}
+                              {t('menu.original')}: {dish.originalName}
                             </p>
                             <p className="text-xs text-foreground/80 mb-2">
                               {dish.description}
                             </p>
                             {dish.ingredients && dish.ingredients.length > 0 && (
                               <p className="text-[10px] text-muted-foreground mb-2">
-                                <span className="font-medium">Ingredients:</span> {dish.ingredients.join(', ')}
+                                <span className="font-medium">{t('menu.ingredients')}:</span> {dish.ingredients.join(', ')}
                               </p>
                             )}
                             <div className="flex flex-wrap gap-1">
