@@ -10,6 +10,7 @@ import { ToolsDirectory } from "@/components/tools/ToolsDirectory";
 import { CherryBlossomTree } from "@/components/CherryBlossomTree";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<'planner' | 'workspaces' | 'tools'>('planner');
@@ -117,15 +118,23 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border/50 bg-card/50">
-        <div className="container mx-auto px-4 py-6 text-center">
-          <p className="text-[10px] text-muted-foreground">
-            🌸 SakuraTrip • AI-Powered Travel Planning
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
+
+// Separate Footer component to use translations
+function Footer() {
+  const { t } = useLanguage();
+  return (
+    <footer className="border-t border-border/50 bg-card/50">
+      <div className="container mx-auto px-4 py-6 text-center">
+        <p className="text-[10px] text-muted-foreground">
+          🌸 {t('footer.tagline')}
+        </p>
+      </div>
+    </footer>
+  );
+}
 
 export default Index;
