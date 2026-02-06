@@ -6,14 +6,12 @@ import { BudgetAnalysisCard } from "@/components/BudgetAnalysisCard";
 import { BudgetTracker } from "@/components/BudgetTracker";
 import { RecommendationsDisplay } from "@/components/RecommendationsDisplay";
 import { WorkspaceDirectory } from "@/components/WorkspaceDirectory";
-import { ToolsDirectory } from "@/components/tools/ToolsDirectory";
 import { CherryBlossomTree } from "@/components/CherryBlossomTree";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState<'planner' | 'workspaces' | 'tools'>('planner');
+  const [activeTab, setActiveTab] = useState<'planner' | 'workspaces'>('planner');
   const [tripData, setTripData] = useState<any>(null);
   const plannerRef = useRef<HTMLDivElement>(null);
 
@@ -105,36 +103,22 @@ const Index = () => {
             </div>
           </>
         ) : (
-        activeTab === 'workspaces' ? (
           <div className="py-8">
             <WorkspaceDirectory />
           </div>
-        ) : (
-          <div className="py-8">
-            <ToolsDirectory />
-          </div>
-        )
         )}
       </main>
 
       {/* Footer */}
-      <Footer />
+      <footer className="border-t border-border/50 bg-card/50">
+        <div className="container mx-auto px-4 py-6 text-center">
+          <p className="text-[10px] text-muted-foreground">
+            🌸 SakuraTrip • AI-Powered Travel Planning
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
-
-// Separate Footer component to use translations
-function Footer() {
-  const { t } = useLanguage();
-  return (
-    <footer className="border-t border-border/50 bg-card/50">
-      <div className="container mx-auto px-4 py-6 text-center">
-        <p className="text-[10px] text-muted-foreground">
-          🌸 {t('footer.tagline')}
-        </p>
-      </div>
-    </footer>
-  );
-}
 
 export default Index;
